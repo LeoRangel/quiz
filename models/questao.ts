@@ -32,4 +32,14 @@ export default class QuestaoModel {
         }
         return false
     }
+
+    // Retorna em formato de objeto
+    toObject() {
+        return {
+            id: this.#id,
+            enunciado: this.#enunciado,
+            respostas: this.#respostas.map(resp => resp.toObject()),
+            acertou: this.#acertou,
+        }
+    }
 }

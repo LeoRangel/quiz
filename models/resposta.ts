@@ -10,6 +10,16 @@ export default class RespostaModel {
         this.#revelada = revelada
     }
 
+    // Método estático que instância uma pergunta verdadeira
+    static certa(valor: string) {
+        return new RespostaModel(valor, true)
+    }
+
+    // Método estático que instância uma pergunta falsa
+    static errada(valor: string) {
+        return new RespostaModel(valor, false)
+    }
+
     get valor() {
         return this.#valor
     }
@@ -22,4 +32,12 @@ export default class RespostaModel {
         return this.#revelada
     }
 
+    // Retorna em formato de objeto
+    toObject() {
+        return {
+            valor: this.#valor,
+            certa: this.#certa,
+            revelada: this.#revelada
+        }
+    }
 }

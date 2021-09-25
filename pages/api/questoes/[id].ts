@@ -1,6 +1,6 @@
 import questoes from '../bancoDeQuestoes'
 
-export default function questoesProId(req, res) {
+export default function questoesPorId(req, res) {
     const idSelecionado = +req.query.id
 
     // Usar filter para encontrar e retornar questao com o id informado na url

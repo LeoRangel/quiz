@@ -1,4 +1,4 @@
-# Letmeask: Leandro Rangel 
+# QUIZ: Leandro Rangel 
 
 [![Repositório](https://img.shields.io/badge/LeoRangel-quiz-brightgreen)](https://github.com/LeoRangel/quiz/)
 

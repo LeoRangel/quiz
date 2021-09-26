@@ -34,6 +34,23 @@ export default class QuestaoModel {
         return false
     }
 
+    // Recebe um índice da resposta escolhida na questão e retorna um novo objeto com a resposta escolhida e a resposta correta reveladas
+    responderCom(indice: number): QuestaoModel {
+        const acertou = this.#respostas[indice]?.certa
+
+        const respostas = this.#respostas.map((resposta, i) => {
+            const respostaSelecionada = (indice === i)
+
+            // Situações em que deve-se revelar a resposta
+            // A resposta atual da iteração do map vai ser revelada se ela foi a selecionada ou é a resposta certa, as demais não serão reveladas
+            const deveRevelar = (respostaSelecionada || resposta.certa)
+
+            return deveRevelar ? resposta.revelar() : resposta
+        })
+
+        return new QuestaoModel(this.id, this.enunciado, respostas, acertou)
+    }
+
     // Embaralha respostas e retorna em uma nova instância do objeto
     embaralharRespostas(): QuestaoModel {
         let respostasEmbaralhadas = embaralhar(this.respostas)
@@ -46,6 +63,7 @@ export default class QuestaoModel {
             id: this.#id,
             enunciado: this.#enunciado,
             respostas: this.#respostas.map(resp => resp.toObject()),
+            respondida: this.respondida,
             acertou: this.#acertou,
         }
     }

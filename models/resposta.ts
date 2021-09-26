@@ -32,6 +32,10 @@ export default class RespostaModel {
         return this.#revelada
     }
 
+    revelar() {
+        return new RespostaModel(this.#valor, this.#certa, true)
+    }
+
     // Retorna em formato de objeto
     toObject() {
         return {

@@ -2,6 +2,7 @@ import QuestaoModel from "../models/questao"
 import styles from "../styles/Questao.module.css"
 import Enunciado from "./Enunciado"
 import Resposta from "./Resposta"
+import Temporizador from "./Temporizador"
 
 const letras = [
     { valor: 'A', cor: '#F2C866' },
@@ -14,6 +15,7 @@ interface QuestaoProps {
     valor: QuestaoModel
     // Função que recebe do componente filho o índice de uma resposta clicada e passa para o componente pai via comunicação direta
     onResponse: (indice: number) => void
+    tempoEsgotado: () => void
 }
 
 export default function Questao(props: QuestaoProps) {
@@ -39,6 +41,12 @@ export default function Questao(props: QuestaoProps) {
     return (
         <div className={styles.questao}>
             <Enunciado texto={questao.enunciado} />
+
+            <Temporizador
+                duracao={3}
+                tempoEsgotado={props.tempoEsgotado}
+            />
+
             {renderizarRespostas()}
         </div>
     )

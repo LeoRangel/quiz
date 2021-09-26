@@ -20,9 +20,20 @@ export default function Home() {
     console.log(indice)
   }
 
+  function tempoEsgotado() {
+    if (questao.naoRespondida) {
+      // Definir que o usuário errou a questão
+      setQuestao(questao.responderCom(-1))
+    }
+  }
+
   return (
     <div>
-      <Questao valor={questao} onResponse={onResponse} />
+      <Questao
+        valor={questao}
+        onResponse={onResponse}
+        tempoEsgotado={tempoEsgotado}
+      />
     </div>
   )
 }

@@ -26,6 +26,9 @@ export default class QuestaoModel {
     get acertou() {
         return this.#acertou
     }
+    get naoRespondida() {
+        return !this.respondida
+    }
     // Verifica se há alguma resposta revalada, se não, retorna que pergunta não foi respondida (false)
     get respondida() {
         for (let resposta of this.respostas) {

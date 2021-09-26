@@ -60,6 +60,14 @@ export default class QuestaoModel {
         return new QuestaoModel(this.#id, this.#enunciado, respostasEmbaralhadas, this.#acertou)
     }
 
+    // Método estático que serve para criar um QuestaoModel a partir de um objeto json
+    static criarUsandoObjeto(obj: QuestaoModel): QuestaoModel {
+        // Transforma as respostas em um RespostaModel
+        const respostas = obj.respostas.map(resp => RespostaModel.criarUsandoObjeto(resp))
+
+        return new QuestaoModel(obj.id, obj.enunciado, respostas, obj.acertou)
+    }
+
     // Retorna em formato de objeto
     toObject() {
         return {

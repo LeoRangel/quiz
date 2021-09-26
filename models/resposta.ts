@@ -36,6 +36,11 @@ export default class RespostaModel {
         return new RespostaModel(this.#valor, this.#certa, true)
     }
 
+    // Método estático que serve para criar um RespostaModel a partir de um objeto json
+    static criarUsandoObjeto(obj: RespostaModel): RespostaModel {
+        return new RespostaModel(obj.valor, obj.certa, obj.revelada)
+    }
+
     // Retorna em formato de objeto
     toObject() {
         return {

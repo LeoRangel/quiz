@@ -1,39 +1,90 @@
-import { useState } from "react";
-import Questao from "../components/Questao";
+import { useEffect, useState } from "react";
+import Questionario from "../components/Questionario";
 import QuestaoModel from "../models/questao";
-import RespostaModel from "../models/resposta";
+import { useRouter } from 'next/router'
 
-const questaoMock = new QuestaoModel(1, 'Qual bicho transmite a Doença de Chagas?', [
-  RespostaModel.errada('Abelha'),
-  RespostaModel.errada('Barata'),
-  RespostaModel.errada('Pulga'),
-  RespostaModel.certa('Barbeiro'),
-])
+const BASE_URL = 'http://localhost:3000/api'
 
 export default function Home() {
-  const [questao, setQuestao] = useState(questaoMock)
+  const router = useRouter()
 
-  // Função que recebe o indice de uma resposta clicada do componente filho via comunicação direta
-  // O índice é captado no componente Resposta, quando uma resposta é clicada, é passado para o componente Questão, que então passa para esta função
-  function onResponse(indice: number) {
-    setQuestao(questao.responderCom(indice))
-    console.log(indice)
+  // Armazena um array de numeros
+  const [idsDasQuestoes, setIdsDasQuestoes] = useState<number[]>([])
+  // Armazena um objeto do tipo questão
+  const [questao, setQuestao] = useState<QuestaoModel>()
+  const [respostasCertas, setRespostasCertas] = useState<number>(0)
+
+
+  // Acessa a api de ids das questões
+  async function carregarIdsDasQuestoes() {
+    const resp = await fetch(`${BASE_URL}/questionario`)
+    const idsDasQuestoes = await resp.json()
+
+    setIdsDasQuestoes(idsDasQuestoes)
   }
 
-  function tempoEsgotado() {
-    if (questao.naoRespondida) {
-      // Definir que o usuário errou a questão
-      setQuestao(questao.responderCom(-1))
-    }
+  // Acessa a api de dados da questão
+  async function carregarQuestao(idQuestao: number) {
+    const resp = await fetch(`${BASE_URL}/questoes/${idQuestao}`)
+    const json = await resp.json()
+
+    const novaQuestao = QuestaoModel.criarUsandoObjeto(json)
+
+    setQuestao(novaQuestao)
   }
+
+
+  useEffect(() => {
+    carregarIdsDasQuestoes()
+  }, [])
+
+  useEffect(() => {
+    idsDasQuestoes.length > 0 && carregarQuestao(idsDasQuestoes[0])
+  }, [idsDasQuestoes])
+
+
+  function questaoRespondida(questaoRespondida: QuestaoModel) {
+    setQuestao(questaoRespondida)
+
+    // Se resposta certa somar + 1 ao estado
+    const acertou = questaoRespondida.acertou
+    setRespostasCertas(respostasCertas + (acertou ? 1 : 0))
+  }
+
+  // Retorna o id da próxima questão no array
+  function idProximaPergunta() {
+    const proximoIndice = idsDasQuestoes.indexOf(questao.id) + 1
+    return idsDasQuestoes[proximoIndice]
+  }
+
+  function irParaProximoPasso() {
+    const proximoId = idProximaPergunta()
+    proximoId ? irParaProximaQuestao(proximoId) : finalizar()
+  }
+
+  function irParaProximaQuestao(proximoId: number) {
+    carregarQuestao(proximoId)
+  }
+
+  function finalizar() {
+    router.push({
+      pathname: "/resultado",
+      query: {
+        total: idsDasQuestoes.length,
+        certas: respostasCertas
+      }
+    })
+  }
+
 
   return (
-    <div>
-      <Questao
-        valor={questao}
-        onResponse={onResponse}
-        tempoEsgotado={tempoEsgotado}
+    questao ? (
+      <Questionario
+        questao={questao}
+        ultimaPergunta={idProximaPergunta() === undefined}
+        questaoRespondida={questaoRespondida}
+        irParaProximoPasso={irParaProximoPasso}
       />
-    </div>
+    ) : false
   )
 }

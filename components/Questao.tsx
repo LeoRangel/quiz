@@ -13,6 +13,7 @@ const letras = [
 
 interface QuestaoProps {
     valor: QuestaoModel
+    tempoResposta?: number
     // Função que recebe do componente filho o índice de uma resposta clicada e passa para o componente pai via comunicação direta
     onResponse: (indice: number) => void
     tempoEsgotado: () => void
@@ -43,7 +44,7 @@ export default function Questao(props: QuestaoProps) {
             <Enunciado texto={questao.enunciado} />
 
             <Temporizador
-                duracao={3}
+                duracao={props.tempoResposta ?? 10}
                 tempoEsgotado={props.tempoEsgotado}
             />
 
